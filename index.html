@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🚀 AGRO GLOBAL SPACE COMMAND CENTER</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+
+:root{
+--primary:#00ffcc;
+--secondary:#00e5ff;
+--bg:#030712;
+--card:rgba(255,255,255,.05);
+--border:rgba(255,255,255,.08);
+--text:#f8fafc;
+--muted:#94a3b8;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#000;
+color:white;
+overflow-x:hidden;
+}
+
+/* ===========================
+   SPACE BACKGROUND
+=========================== */
+
+.space{
+position:fixed;
+inset:0;
+z-index:-10;
+
+background:
+radial-gradient(circle at 20% 20%, rgba(0,255,204,.12), transparent 30%),
+radial-gradient(circle at 80% 40%, rgba(0,100,255,.12), transparent 30%),
+radial-gradient(circle at center,#081020 0%,#030712 60%,#000 100%);
+}
+
+.stars{
+position:fixed;
+inset:0;
+z-index:-9;
+background-image:
+radial-gradient(2px 2px at 40px 60px,#fff,transparent),
+radial-gradient(1px 1px at 100px 150px,#00ffcc,transparent),
+radial-gradient(2px 2px at 300px 250px,#fff,transparent),
+radial-gradient(1px 1px at 500px 80px,#00e5ff,transparent),
+radial-gradient(2px 2px at 700px 180px,#fff,transparent);
+
+background-size:800px 800px;
+
+animation:moveStars 120s linear infinite;
+}
+
+@keyframes moveStars{
+from{
+transform:translateY(0);
+}
+to{
+transform:translateY(-800px);
+}
+}
+
+/* ===========================
+   NAVBAR
+=========================== */
+
+nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:20px 40px;
+
+background:rgba(0,0,0,.45);
+
+backdrop-filter:blur(20px);
+
+border-bottom:1px solid rgba(255,255,255,.05);
+
+z-index:1000;
+}
+
+.logo{
+font-size:1.3rem;
+font-weight:800;
+color:var(--primary);
+}
+
+.nav-btn{
+padding:12px 25px;
+border:none;
+border-radius:50px;
+
+background:var(--primary);
+
+font-weight:700;
+
+cursor:pointer;
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+
+min-height:100vh;
+
+display:flex;
+flex-direction:column;
+
+justify-content:center;
+align-items:center;
+
+text-align:center;
+
+padding:40px;
+position:relative;
+}
+
+.hero::before{
+
+content:"";
+
+position:absolute;
+inset:0;
+
+background:
+linear-gradient(
+rgba(0,0,0,.5),
+rgba(0,0,0,.85)
+),
+
+url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1600&q=80");
+
+background-size:cover;
+background-position:center;
+
+z-index:-1;
+}
+
+.hero h1{
+font-size:5rem;
+font-weight:900;
+
+background:linear-gradient(
+90deg,
+white,
+#00ffcc
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+margin-bottom:20px;
+}
+
+.hero h2{
+color:#00ffcc;
+font-weight:400;
+letter-spacing:6px;
+margin-bottom:30px;
+}
+
+.hero p{
+max-width:900px;
+line-height:1.8;
+font-size:1.1rem;
+color:#cbd5e1;
+}
+
+.hero-buttons{
+margin-top:40px;
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.btn-main{
+padding:16px 40px;
+border:none;
+border-radius:50px;
+
+background:#00ffcc;
+color:#000;
+
+font-weight:800;
+
+cursor:pointer;
+}
+
+.btn-secondary{
+padding:16px 40px;
+
+border-radius:50px;
+
+background:transparent;
+
+border:1px solid #00ffcc;
+
+color:#00ffcc;
+
+cursor:pointer;
+}
+
+/* ===========================
+   KPI
+=========================== */
+
+section{
+padding:90px 40px;
+max-width:1500px;
+margin:auto;
+}
+
+.section-title{
+font-size:2.3rem;
+margin-bottom:40px;
+color:white;
+}
+
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:25px;
+}
+
+.card{
+background:rgba(255,255,255,.04);
+
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.08);
+
+padding:30px;
+
+border-radius:20px;
+
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+
+box-shadow:
+0 0 50px rgba(0,255,204,.15);
+}
+
+.card h3{
+color:#00ffcc;
+margin-bottom:10px;
+}
+
+.card h1{
+font-size:3rem;
+}
+
+/* ===========================
+   GALLERY
+=========================== */
+
+.gallery{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(300px,1fr));
+
+gap:25px;
+}
+
+.gallery img{
+width:100%;
+height:280px;
+object-fit:cover;
+
+border-radius:20px;
+}
+
+/* ===========================
+   MAP
+=========================== */
+
+#map{
+height:600px;
+border-radius:20px;
+overflow:hidden;
+}
+
+/* ===========================
+   CHART
+=========================== */
+
+.chart-box{
+height:500px;
+padding:20px;
+background:rgba(255,255,255,.04);
+border-radius:20px;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+footer{
+padding:60px;
+text-align:center;
+color:#94a3b8;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:3rem;
+}
+
+.hero h2{
+font-size:1rem;
+letter-spacing:2px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="space"></div>
+<div class="stars"></div>
+
+<nav>
+
+<div class="logo">
+🚀 AGRO GLOBAL SPACE COMMAND
+</div>
+
+<button class="nav-btn">
+MISSION CONTROL
+</button>
+
+</nav>
+
+<section class="hero">
+
+<h1>
+AGRO GLOBAL
+</h1>
+
+<h2>
+SPACE COMMAND CENTER
+</h2>
+
+<p>
+Plataforma global inspirada em centros de comando aeroespaciais para monitoramento agrícola, inteligência artificial, sensoriamento orbital, pecuária inteligente, análise climática e produtividade mundial em tempo real.
+</p>
+
+<div class="hero-buttons">
+
+<button class="btn-main">
+🚀 INICIAR MISSÃO
+</button>
+
+<button class="btn-secondary">
+🛰️ VER SATÉLITES
+</button>
+
+</div>
+
+</section>
+
+<section>
+
+<h2 class="section-title">
+🌍 CENTRO GLOBAL DE OPERAÇÕES
+</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🛰️ Satélites Ativos</h3>
+<h1>2.134</h1>
+</div>
+
+<div class="card">
+<h3>🌱 Fazendas Monitoradas</h3>
+<h1>84.210</h1>
+</div>
+
+<div class="card">
+<h3>🚜 Máquinas Conectadas</h3>
+<h1>38.500</h1>
+</div>
+
+<div class="card">
+<h3>🌍 Países Integrados</h3>
+<h1>184</h1>
+</div>
+
+</div>
+
+</section>
+<!-- =====================================
+     GALERIA AGRÍCOLA PREMIUM
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+📸 CENTRO VISUAL AGRÍCOLA
+</h2>
+
+<div class="gallery">
+
+<img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80">
+
+<img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80">
+
+<img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80">
+
+<img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80">
+
+<img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80">
+
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80">
+
+</div>
+
+</section>
+
+<!-- =====================================
+     GRÁFICO GLOBAL
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+📈 PRODUÇÃO GLOBAL DE ALIMENTOS
+</h2>
+
+<div class="chart-box">
+
+<canvas id="agroChart"></canvas>
+
+</div>
+
+</section>
+
+<!-- =====================================
+     MAPA GLOBAL
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+🗺️ MONITORAMENTO GLOBAL
+</h2>
+
+<div id="map"></div>
+
+</section>
+
+<!-- =====================================
+     AGRO IA
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+🤖 AGRO IA ORBITAL
+</h2>
+
+<div class="card">
+
+<h3>Assistente Inteligente</h3>
+
+<input
+id="pergunta"
+placeholder="Digite uma pergunta..."
+style="
+width:100%;
+padding:15px;
+margin-top:20px;
+border-radius:12px;
+border:none;
+background:#0f172a;
+color:white;
+">
+
+<button
+onclick="responderIA()"
+style="
+margin-top:15px;
+padding:14px 25px;
+background:#00ffcc;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+">
+
+Enviar
+
+</button>
+
+<div
+id="respostaIA"
+style="
+margin-top:25px;
+padding:20px;
+background:rgba(255,255,255,.03);
+border-radius:12px;
+">
+
+Sistema Agro IA pronto.
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================
+     CLIMA E NDVI
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+🌦️ CLIMA E MONITORAMENTO NDVI
+</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🌡️ Temperatura Média</h3>
+<h1>24°C</h1>
+</div>
+
+<div class="card">
+<h3>💧 Umidade</h3>
+<h1>68%</h1>
+</div>
+
+<div class="card">
+<h3>🌱 Índice NDVI</h3>
+<h1>0.82</h1>
+</div>
+
+<div class="card">
+<h3>☀️ Radiação Solar</h3>
+<h1>6.1</h1>
+</div>
+
+</div>
+
+</section>
+
+<!-- =====================================
+     PECUÁRIA
+===================================== -->
+
+<section>
+
+<h2 class="section-title">
+🐄 PECUÁRIA INTELIGENTE
+</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>Rebanho Monitorado</h3>
+<h1>1.2M</h1>
+</div>
+
+<div class="card">
+<h3>Saúde Animal</h3>
+<h1>98%</h1>
+</div>
+
+<div class="card">
+<h3>Produção Leiteira</h3>
+<h1>+23%</h1>
+</div>
+
+<div class="card">
+<h3>Rastreamento RFID</h3>
+<h1>100%</h1>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+🚀 AGRO GLOBAL SPACE COMMAND CENTER © 2026
+
+</footer>
+
+<script>
+
+/* ===================
+   CHART
+=================== */
+
+const ctx =
+document.getElementById("agroChart");
+
+new Chart(ctx, {
+
+type:"bar",
+
+data:{
+
+labels:[
+"Soja",
+"Milho",
+"Trigo",
+"Arroz",
+"Café"
+],
+
+datasets:[{
+
+label:"Produção Mundial",
+
+data:[
+370,
+1200,
+780,
+520,
+180
+],
+
+backgroundColor:"#00ffcc"
+
+}]
+
+},
+
+options:{
+responsive:true
+}
+
+});
+
+/* ===================
+   MAPA
+=================== */
+
+const map =
+L.map('map').setView([-15,-55],3);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+).addTo(map);
+
+L.marker([-15.79,-47.88])
+.addTo(map)
+.bindPopup("Brasil");
+
+L.marker([40,-100])
+.addTo(map)
+.bindPopup("Estados Unidos");
+
+L.marker([35,105])
+.addTo(map)
+.bindPopup("China");
+
+/* ===================
+   IA
+=================== */
+
+function responderIA(){
+
+let texto =
+document.getElementById("pergunta")
+.value
+.toLowerCase();
+
+let resposta =
+"Sistema analisando dados orbitais.";
+
+if(texto.includes("solo")){
+
+resposta =
+"🌱 Solo apresenta excelentes índices de produtividade.";
+
+}
+
+else if(texto.includes("pecuaria")){
+
+resposta =
+"🐄 Pecuária inteligente detecta ganho de peso acima da média.";
+
+}
+
+else if(texto.includes("clima")){
+
+resposta =
+"🌦️ Clima estável com previsão favorável.";
+
+}
+
+else if(texto.includes("ndvi")){
+
+resposta =
+"🛰️ NDVI elevado indica vegetação saudável.";
+
+}
+
+document.getElementById(
+"respostaIA"
+).innerHTML = resposta;
+
+}
+
+</script>
+
+</body>
+
+</html>
+```html
+<!-- ================================
+     🌍 THREE.JS GLOBO 3D
+================================ -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+<div id="globe-container"></div>
+
+<style>
+#globe-container{
+    position:fixed;
+    right:-200px;
+    bottom:-200px;
+    width:600px;
+    height:600px;
+    z-index:-5;
+    opacity:0.8;
+}
+</style>
+
+<script>
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+
+let renderer = new THREE.WebGLRenderer({alpha:true});
+renderer.setSize(600,600);
+document.getElementById("globe-container").appendChild(renderer.domElement);
+
+// 🌍 Terra
+let geometry = new THREE.SphereGeometry(2, 64, 64);
+
+let texture = new THREE.TextureLoader().load(
+"https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg"
+);
+
+let material = new THREE.MeshBasicMaterial({map: texture});
+
+let earth = new THREE.Mesh(geometry, material);
+scene.add(earth);
+
+camera.position.z = 5;
+
+// 🛰️ Satélite fake (cubinho orbitando)
+let satGeo = new THREE.BoxGeometry(0.1,0.1,0.1);
+let satMat = new THREE.MeshBasicMaterial({color:0x00ffcc});
+let satellite = new THREE.Mesh(satGeo, satMat);
+scene.add(satellite);
+
+let angle = 0;
+
+function animate(){
+    requestAnimationFrame(animate);
+
+    earth.rotation.y += 0.002;
+
+    angle += 0.01;
+    satellite.position.x = Math.cos(angle) * 3;
+    satellite.position.z = Math.sin(angle) * 3;
+    satellite.position.y = Math.sin(angle) * 1.2;
+
+    renderer.render(scene, camera);
+}
+
+animate();
+</script>
+
+<!-- ================================
+     📡 RADAR GLOBAL
+================================ -->
+<div class="radar"></div>
+
+<style>
+.radar{
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:700px;
+    height:700px;
+
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+
+    border:1px solid rgba(0,255,204,.15);
+
+    box-shadow:0 0 80px rgba(0,255,204,.08);
+
+    animation:spin 20s linear infinite;
+
+    z-index:-6;
+}
+
+.radar::before{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(0,255,204,.2)
+    );
+
+    border-radius:50%;
+}
+
+@keyframes spin{
+    from{transform:translate(-50%,-50%) rotate(0deg);}
+    to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+</style>
+
+<!-- ================================
+     ✨ PARTICULAS MELHORADAS
+================================ -->
+<script>
+for(let i=0;i<80;i++){
+    let s=document.createElement("div");
+    s.style.position="fixed";
+    s.style.width="2px";
+    s.style.height="2px";
+    s.style.background="#00ffcc";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    s.style.opacity=Math.random();
+    s.style.zIndex="-8";
+    s.style.borderRadius="50%";
+    document.body.appendChild(s);
+
+    setInterval(()=>{
+        s.style.top=(parseFloat(s.style.top)+0.1)+"vh";
+        if(parseFloat(s.style.top)>100){
+            s.style.top="0vh";
+        }
+    },50);
+}
+</script>
+```
+```html
+<!-- =========================
+     📊 NÚMEROS ANIMADOS
+========================= -->
+<script>
+function animarNumero(el, final, tempo=2000){
+    let atual = 0;
+    let incremento = final / (tempo / 16);
+
+    let intervalo = setInterval(()=>{
+        atual += incremento;
+
+        if(atual >= final){
+            atual = final;
+            clearInterval(intervalo);
+        }
+
+        el.innerText = Math.floor(atual).toLocaleString();
+    },16);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+    let cards = document.querySelectorAll(".card h1");
+
+    cards.forEach(c=>{
+        let valor = parseInt(c.innerText.replace(/\D/g,""));
+        if(!isNaN(valor)){
+            animarNumero(c, valor);
+        }
+    });
+});
+</script>
+
+<!-- =========================
+     ⚡ GLOW DINÂMICO
+========================= -->
+<style>
+.card:hover{
+    box-shadow:
+    0 0 20px rgba(0,255,204,.2),
+    0 0 60px rgba(0,255,204,.1);
+}
+</style>
+
+<!-- =========================
+     📡 LINHAS GLOBAIS (REDE)
+========================= -->
+<canvas id="network"></canvas>
+
+<style>
+#network{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-7;
+    opacity:.15;
+}
+</style>
+
+<script>
+const canvas = document.getElementById("network");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let points = [];
+
+for(let i=0;i<60;i++){
+    points.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*0.5,
+        vy:(Math.random()-0.5)*0.5
+    });
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let p of points){
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x<0||p.x>canvas.width) p.vx*=-1;
+        if(p.y<0||p.y>canvas.height) p.vy*=-1;
+
+        ctx.fillStyle="#00ffcc";
+        ctx.fillRect(p.x,p.y,2,2);
+
+        for(let p2 of points){
+            let dist = Math.hypot(p.x-p2.x,p.y-p2.y);
+
+            if(dist<120){
+                ctx.strokeStyle="rgba(0,255,204,0.1)";
+                ctx.beginPath();
+                ctx.moveTo(p.x,p.y);
+                ctx.lineTo(p2.x,p2.y);
+                ctx.stroke();
+            }
+        }
+    }
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+<!-- =========================
+     🚀 SCAN DE MISSÃO
+========================= -->
+<div class="scan"></div>
+
+<style>
+.scan{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+
+    background:linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0,255,204,.08),
+        transparent
+    );
+
+    animation:scanMove 6s linear infinite;
+
+    pointer-events:none;
+    z-index:-6;
+}
+
+@keyframes scanMove{
+    from{transform:translateY(-100%);}
+    to{transform:translateY(100%);}
+}
+</style>
+
+<!-- =========================
+     🧠 IA MAIS INTELIGENTE
+========================= -->
+<script>
+function melhorarIA(texto){
+
+texto = texto.toLowerCase();
+
+if(texto.includes("futuro")){
+    return "🚀 O futuro da agricultura será 100% automatizado com IA orbital e robótica autônoma.";
+}
+
+if(texto.includes("clima")){
+    return "🌦️ Modelos climáticos indicam estabilidade com alta produtividade global.";
+}
+
+if(texto.includes("tecnologia")){
+    return "🧠 Sistemas agroindustriais estão evoluindo para redes neurais agrícolas globais.";
+}
+
+return "📡 Análise orbital em andamento... dados insuficientes para conclusão.";
+}
+</script>
+
+<!-- (ligar na sua função existente de IA se quiser) -->
+```
+<section>
+<h2 class="section-title">🚀 MISSÕES ATIVAS</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🛰️ Monitoramento Satélite</h3>
+<p>Status: ATIVO</p>
+</div>
+
+<div class="card">
+<h3>🌱 Análise de Safra</h3>
+<p>Status: PROCESSANDO</p>
+</div>
+
+<div class="card">
+<h3>🌦️ Previsão Climática</h3>
+<p>Status: SINCRONIZADO</p>
+</div>
+
+</div>
+</section>
+<section>
+<h2 class="section-title">🌾 ECOSSISTEMA AGRÍCOLA GLOBAL</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🌱 Agricultura Sustentável</h3>
+<p>Integração de técnicas regenerativas que restauram o solo, aumentam biodiversidade e reduzem emissão de carbono.</p>
+</div>
+
+<div class="card">
+<h3>🚜 Agricultura de Precisão</h3>
+<p>Uso de sensores, GPS e IA para aplicar água e fertilizantes apenas onde é necessário.</p>
+</div>
+
+<div class="card">
+<h3>🛰️ Observação por Satélite</h3>
+<p>Monitoramento contínuo de lavouras via imagens NDVI e análise espectral da vegetação.</p>
+</div>
+
+<div class="card">
+<h3>🐄 Pecuária Inteligente</h3>
+<p>Rastreamento em tempo real de saúde animal, alimentação e produtividade do rebanho.</p>
+</div>
+
+</div>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title">🛰️ SATÉLITES & DADOS ORBITAIS</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🛰️ NDVI Global</h3>
+<p>Índice de vegetação analisado por satélites em resolução diária.</p>
+</div>
+
+<div class="card">
+<h3>🌍 Cobertura Terrestre</h3>
+<p>Mapeamento completo de uso do solo: agricultura, florestas e pastagens.</p>
+</div>
+
+<div class="card">
+<h3>🔥 Alertas Climáticos</h3>
+<p>Detecção precoce de seca, enchentes e estresse hídrico.</p>
+</div>
+
+<div class="card">
+<h3>📡 Conectividade Global</h3>
+<p>Rede de satélites integrando fazendas em tempo real.</p>
+</div>
+
+</div>
+</section>
+<section>
+<h2 class="section-title">🌱 CIÊNCIA DO SOLO AVANÇADA</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🧪 Nutrientes (NPK)</h3>
+<p>Nitrogênio, fósforo e potássio monitorados em tempo real via sensores IoT.</p>
+</div>
+
+<div class="card">
+<h3>💧 Umidade do Solo</h3>
+<p>Controle automatizado de irrigação baseado em sensores subterrâneos.</p>
+</div>
+
+<div class="card">
+<h3>⚡ Condutividade</h3>
+<p>Indicador de fertilidade e estrutura física do solo agrícola.</p>
+</div>
+
+<div class="card">
+<h3>🌍 Carbono Orgânico</h3>
+<p>Indicador de saúde do solo e sustentabilidade ambiental.</p>
+</div>
+
+</div>
+</section>
+<section>
+<h2 class="section-title">📸 AGRICULTURA MODERNA (DRONES & SATÉLITES)</h2>
+
+<div class="gallery">
+
+<img src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1200&q=80">
+<img src="https://images.unsplash.com/photo-1461354464878-ad92f492a5a0?auto=format&fit=crop&w=1200&q=80">
+<img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80">
+<img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=1200&q=80">
+<img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1200&q=80">
+<img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80">
+
+</div>
+</section>
+<section>
+<h2 class="section-title">🛰️ TECNOLOGIA COM DRONES AGRÍCOLAS</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>📡 Mapeamento Aéreo</h3>
+<p>Drones capturam imagens de alta resolução para detectar falhas de plantio e pragas precocemente.</p>
+</div>
+
+<div class="card">
+<h3>🌿 Análise NDVI</h3>
+<p>Identifica saúde da vegetação com base na reflexão da luz infravermelha das plantas.</p>
+</div>
+
+<div class="card">
+<h3>🧪 Pulverização Inteligente</h3>
+<p>Drones aplicam defensivos agrícolas de forma localizada, reduzindo desperdício químico.</p>
+</div>
+
+<div class="card">
+<h3>📍 Agricultura de Precisão</h3>
+<p>Integração de mapas, sensores e IA para decisões automáticas no campo.</p>
+</div>
+
+</div>
+</section>
+<section>
+<h2 class="section-title">🐄 PECUÁRIA MODERNA DIGITAL</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>📡 Rastreamento RFID</h3>
+<p>Cada animal é monitorado em tempo real com sensores e chips inteligentes.</p>
+</div>
+
+<div class="card">
+<h3>🥩 Produção Sustentável</h3>
+<p>Controle nutricional reduz emissão de gases e melhora qualidade da carne e leite.</p>
+</div>
+
+<div class="card">
+<h3>🌡️ Saúde Animal</h3>
+<p>Sensores detectam febre, estresse e doenças antes dos sintomas visíveis.</p>
+</div>
+
+<div class="card">
+<h3>📊 Gestão Inteligente</h3>
+<p>Sistemas digitais controlam reprodução, alimentação e produtividade do rebanho.</p>
+</div>
+
+</div>
+</section>
+<section>
+<h2 class="section-title">🌍 IMPACTO GLOBAL DA AGRICULTURA</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🌎 Produção Mundial</h3>
+<p>A agricultura alimenta mais de 8 bilhões de pessoas e movimenta trilhões de dólares globalmente.</p>
+</div>
+
+<div class="card">
+<h3>🌾 Uso da Terra</h3>
+<p>Grande parte do território mundial é destinado à produção agrícola e pecuária integrada.</p>
+</div>
+
+<div class="card">
+<h3>🔥 Sustentabilidade</h3>
+<p>Novas tecnologias reduzem impacto ambiental e aumentam eficiência produtiva.</p>
+</div>
+
+<div class="card">
+<h3>🚀 Futuro do Agro</h3>
+<p>O futuro inclui IA, automação total e monitoramento por satélites em tempo real.</p>
+</div>
+
+</div>
+</section>
+<div class="card">
+<h3>🌦️ CLIMA EM TEMPO REAL</h3>
+<p id="clima">Carregando dados...</p>
+</div>
+
+<script>
+async function getClima(){
+
+try{
+
+let res = await fetch(
+"https://api.open-meteo.com/v1/forecast?latitude=-15.79&longitude=-47.88&current_weather=true"
+);
+
+let data = await res.json();
+
+let c = data.current_weather;
+
+document.getElementById("clima").innerHTML =
+`🌡️ Temp: ${c.temperature}°C <br>
+💨 Vento: ${c.windspeed} km/h`;
+
+}catch(e){
+
+document.getElementById("clima").innerHTML =
+"Erro ao carregar clima.";
+
+}
+
+}
+
+getClima();
+</script>
+<div class="card">
+<h3>🌾 MERCADO AGRÍCOLA</h3>
+<p id="precos">Atualizando mercado...</p>
+</div>
+
+<script>
+const precos = [
+"Soja: R$ 142,50",
+"Milho: R$ 68,20",
+"Café: R$ 890,00"
+];
+
+setInterval(()=>{
+
+document.getElementById("precos").innerHTML =
+precos[Math.floor(Math.random()*precos.length)];
+
+},2000);
+</script>
